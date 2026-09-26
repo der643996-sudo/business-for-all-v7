@@ -1,7 +1,7 @@
 {
-  "name": "business-for-all-v8-no-r2",
+  "name": "business-for-all-v9-academic-premium",
   "private": true,
-  "version": "8.0.2",
+  "version": "9.0.0",
   "type": "module",
   "scripts": {
     "dev": "wrangler dev",

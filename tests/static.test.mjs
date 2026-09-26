@@ -10,8 +10,8 @@ const config=JSON.parse(fs.readFileSync('wrangler.jsonc','utf8'));
 const pkg=JSON.parse(fs.readFileSync('package.json','utf8'));
 const migration=fs.readFileSync('migrations/0001_initial.sql','utf8');
 
-test('v8 package is existing-D1 and No-R2',()=>{
-  assert.equal(pkg.version,'8.0.2');
+test('v9 package is existing-D1 and No-R2',()=>{
+  assert.equal(pkg.version,'9.0.0');
   assert.equal(config.r2_buckets,undefined);
   assert.equal(config.d1_databases?.[0]?.binding,'DB');
   assert.equal(config.d1_databases?.[0]?.database_id,'5bcf36c6-e1fc-47d4-8431-6d1fc1c8aa5a');
@@ -53,16 +53,20 @@ test('external links require HTTPS and block local/private targets',()=>{
   assert.match(worker,/redirect:'manual'/);
 });
 
-test('v8 routes include No-R2 management features',()=>{
+test('v9 routes include No-R2 management features',()=>{
   for(const p of ['/health','/bootstrap/status','/public','/admin/dashboard','/admin/resources/bulk','/admin/link-check','/admin/trash','/admin/team','/admin/backup','/admin/restore','/admin/settings'])assert.ok(worker.includes(p),p);
 });
 
-test('frontend contains all requested v8 flows',()=>{
+test('frontend contains all requested v9 flows',()=>{
   for(const symbol of ['renderPublicCatalog','toggleFavorite','showQR','showResourceLinks','renderImport','renderTrash','renderTeam','renderSettings','resourceModal'])assert.match(app,new RegExp(symbol));
   assert.match(app,/mirror_url_1/);
   assert.match(app,/maintenance_mode/);
   assert.match(css,/\.quick-switch/);
   assert.match(css,/\.trash-item/);
+  assert.match(css,/\.course-grid/);
+  assert.match(css,/\.mobile-bottom-nav/);
+  assert.match(app,/selectPublicSubject/);
+  assert.match(app,/premium-hero/);
 });
 
 test('each resource opens in its own dedicated browser window with fallback',()=>{
@@ -74,7 +78,7 @@ test('each resource opens in its own dedicated browser window with fallback',()=
 
 test('PWA service worker does not cache API responses',()=>{
   assert.match(sw,/startsWith\('\/api\/'\)/);
-  assert.match(sw,/CACHE='bfa-v8-shell'/);
+  assert.match(sw,/CACHE='bfa-v9-shell'/);
 });
 
 test('project contains no R2 binding or upload API',()=>{

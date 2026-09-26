@@ -1,8 +1,8 @@
-# Business For All v8 — Fresh D1 Target / No R2
+# Business For All v9 — Fresh D1 Target / No R2
 
 **D1 ID:** `5bcf36c6-e1fc-47d4-8431-6d1fc1c8aa5a`
 
-On Windows, run **`START.bat`** to reset the known Business For All tables in this D1, recreate the clean v8 schema, validate, and deploy. This is the requested fresh-start path.
+On Windows, run **`START.bat`** to reset the known Business For All tables in this D1, recreate the clean v9 schema, validate, and deploy. This is the requested fresh-start path.
 
 If you ever need to keep existing data, use **`START-KEEP-DATA.bat`** instead.
 
@@ -10,7 +10,7 @@ No R2 bucket is created or used.
 
 ---
 
-# Business For All v8.0 — No R2 Edition
+# Business For All v9.0 — No R2 Edition
 
 نسخة كاملة تعمل على **Cloudflare Workers + D1 + Static Assets** فقط. لا يوجد R2 ولا يتم إنشاء Bucket ولا رفع ملفات إلى Cloudflare.
 
@@ -43,7 +43,7 @@ npx wrangler login
 
 ستظهر شاشة إنشاء **Owner**. بعد إنشاء المالك يمكنك الدخول إلى لوحة الإدارة.
 
-## ما الجديد في v8
+## ما الجديد في v9
 
 - No R2 بالكامل — D1 للبيانات وروابط HTTPS خارجية للملفات.
 - رابط أساسي + رابطان احتياطيان لكل ملف.
@@ -118,4 +118,4 @@ npm run deploy
 
 ## فتح الملفات في نافذة مستقلة
 
-من v8.0.2 يفتح كل ملف أو رابط احتياطي في نافذة متصفح مستقلة خاصة به، مع إبقاء المنصة مفتوحة. إذا منع المتصفح النوافذ المنبثقة، يتم استخدام تبويب جديد تلقائيًا.
+من v9.0.0 يفتح كل ملف أو رابط احتياطي في نافذة متصفح مستقلة خاصة به، مع إبقاء المنصة مفتوحة. إذا منع المتصفح النوافذ المنبثقة، يتم استخدام تبويب جديد تلقائيًا.
