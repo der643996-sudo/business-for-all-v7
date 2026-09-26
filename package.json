@@ -1,17 +1,16 @@
 {
-  "name": "business-for-all-v71-fresh",
+  "name": "business-for-all-v8-no-r2",
   "private": true,
-  "version": "7.1.0",
+  "version": "8.0.1",
   "type": "module",
   "scripts": {
     "dev": "wrangler dev",
-    "check": "node --check src/index.js && node --check public/app.js",
+    "check": "node --check src/index.js && node --check public/app.js && node --check public/sw.js",
     "test": "node --test tests/*.test.mjs",
     "validate": "npm run check && npm test",
     "deploy": "npm run validate && wrangler deploy",
-    "db:remote": "wrangler d1 migrations apply DB --remote",
-    "types": "wrangler types",
-    "db:init:remote": "wrangler d1 execute DB --remote --file migrations/0001_initial.sql --yes"
+    "db:init:remote": "wrangler d1 execute DB --remote --file migrations/0001_initial.sql --yes",
+    "types": "wrangler types"
   },
   "devDependencies": {
     "wrangler": "^4.136.1"

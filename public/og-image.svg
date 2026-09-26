@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs><linearGradient id="g" x1="0" x2="1"><stop stop-color="#0f766e"/><stop offset="1" stop-color="#14b8a6"/></linearGradient></defs>
+  <rect width="1200" height="630" fill="#071017"/>
+  <circle cx="1040" cy="70" r="330" fill="#0f766e" opacity=".18"/>
+  <rect x="92" y="106" width="110" height="110" rx="32" fill="url(#g)"/>
+  <text x="147" y="183" fill="white" font-family="Arial" font-size="58" font-weight="700" text-anchor="middle">B</text>
+  <text x="92" y="300" fill="white" font-family="Arial" font-size="72" font-weight="700">Business For All</text>
+  <text x="92" y="374" fill="#99f6e4" font-family="Arial" font-size="34">Academic Resources Platform</text>
+  <text x="92" y="442" fill="#94a3b8" font-family="Arial" font-size="28">Materials • Lectures • Resources</text>
+</svg>

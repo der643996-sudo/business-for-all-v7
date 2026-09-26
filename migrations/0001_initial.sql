@@ -29,7 +29,8 @@ CREATE TABLE IF NOT EXISTS subjects (
   semester TEXT NOT NULL DEFAULT '',
   status TEXT NOT NULL DEFAULT 'published' CHECK(status IN ('published','hidden')),
   created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+  updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  deleted_at TEXT
 );
 
 CREATE TABLE IF NOT EXISTS resources (
@@ -38,17 +39,23 @@ CREATE TABLE IF NOT EXISTS resources (
   title TEXT NOT NULL,
   description TEXT NOT NULL DEFAULT '',
   resource_url TEXT NOT NULL,
+  mirror_url_1 TEXT,
+  mirror_url_2 TEXT,
   type TEXT NOT NULL DEFAULT 'PDF',
   provider TEXT NOT NULL DEFAULT 'external',
-  link_status TEXT NOT NULL DEFAULT 'unknown',
+  link_status TEXT NOT NULL DEFAULT 'unknown' CHECK(link_status IN ('unknown','ok','error')),
   last_checked_at TEXT,
   content_type TEXT NOT NULL DEFAULT 'lectures',
   lecture_name TEXT NOT NULL DEFAULT '',
+  tags TEXT NOT NULL DEFAULT '',
   file_size INTEGER NOT NULL DEFAULT 0 CHECK(file_size >= 0),
   status TEXT NOT NULL DEFAULT 'published' CHECK(status IN ('published','hidden')),
+  pinned INTEGER NOT NULL DEFAULT 0 CHECK(pinned IN (0,1)),
+  expires_at TEXT,
   downloads INTEGER NOT NULL DEFAULT 0 CHECK(downloads >= 0),
   created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+  updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  deleted_at TEXT
 );
 
 CREATE TABLE IF NOT EXISTS announcements (
@@ -61,7 +68,8 @@ CREATE TABLE IF NOT EXISTS announcements (
   starts_at TEXT,
   ends_at TEXT,
   created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+  updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  deleted_at TEXT
 );
 
 CREATE TABLE IF NOT EXISTS settings (
@@ -81,11 +89,12 @@ CREATE TABLE IF NOT EXISTS audit_logs (
   created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE INDEX IF NOT EXISTS idx_subjects_taxonomy ON subjects(study_level,semester,department,academic_year,status);
-CREATE INDEX IF NOT EXISTS idx_resources_subject ON resources(subject_id,status,created_at DESC);
-CREATE INDEX IF NOT EXISTS idx_resources_search ON resources(content_type,type,status,created_at DESC);
-CREATE INDEX IF NOT EXISTS idx_resources_downloads ON resources(downloads DESC);
-CREATE INDEX IF NOT EXISTS idx_announcements_schedule ON announcements(status,pinned,starts_at,ends_at);
+CREATE INDEX IF NOT EXISTS idx_subjects_taxonomy ON subjects(deleted_at,status,study_level,semester,department,academic_year);
+CREATE INDEX IF NOT EXISTS idx_resources_subject ON resources(subject_id,deleted_at,status,pinned,created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_resources_search ON resources(deleted_at,content_type,type,status,created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_resources_downloads ON resources(deleted_at,downloads DESC);
+CREATE INDEX IF NOT EXISTS idx_resources_expiry ON resources(deleted_at,status,expires_at);
+CREATE INDEX IF NOT EXISTS idx_announcements_schedule ON announcements(deleted_at,status,pinned,starts_at,ends_at);
 CREATE INDEX IF NOT EXISTS idx_sessions_expiry ON sessions(expires_at);
 CREATE INDEX IF NOT EXISTS idx_audit_created ON audit_logs(created_at DESC);
 
@@ -94,4 +103,6 @@ INSERT OR IGNORE INTO settings(key,value) VALUES
   ('site_description','منصة تعليمية عصرية لطلاب إدارة الأعمال'),
   ('academic_year','2026/2027'),
   ('hero_badge','منصة المواد الدراسية'),
-  ('footer_text','Business For All — كل المحتوى الأكاديمي في مكان واحد');
+  ('footer_text','Business For All — كل المحتوى الأكاديمي في مكان واحد'),
+  ('maintenance_mode','0'),
+  ('maintenance_message','نجري بعض التحسينات الآن. ارجع بعد قليل.');

@@ -1,37 +1,73 @@
-# Business For All v7.1 — Fresh Database Edition
+# Business For All v8 — Fresh D1 Target / No R2
 
-هذه النسخة تبدأ **قاعدة البيانات من الصفر بالكامل**. لا يوجد داخل `wrangler.jsonc` أي `database_id` قديم، ولا توجد جداول `v3_*` أو migrations قديمة.
+**D1 ID:** `5bcf36c6-e1fc-47d4-8431-6d1fc1c8aa5a`
 
-## أسرع تشغيل على Windows
+On Windows, run **`START.bat`** to reset the known Business For All tables in this D1, recreate the clean v8 schema, validate, and deploy. This is the requested fresh-start path.
+
+If you ever need to keep existing data, use **`START-KEEP-DATA.bat`** instead.
+
+No R2 bucket is created or used.
+
+---
+
+# Business For All v8.0 — No R2 Edition
+
+نسخة كاملة تعمل على **Cloudflare Workers + D1 + Static Assets** فقط. لا يوجد R2 ولا يتم إنشاء Bucket ولا رفع ملفات إلى Cloudflare.
+
+## التشغيل الأسرع على Windows
 
 فك الضغط ثم شغّل:
 
 ```text
-START-FRESH-DATABASE.bat
+START-NO-R2.bat
 ```
 
-الملف ينفّذ بالترتيب:
+السكريبت ينفّذ تلقائيًا:
 
-1. تثبيت dependencies.
-2. إنشاء **D1 جديدة تمامًا** باسم فريد في Western Europe.
-3. ربطها بالـWorker باسم `DB` وتحديث `wrangler.jsonc` تلقائيًا.
-4. إنشاء الـschema النظيف من `migrations/0001_initial.sql`.
-5. تشغيل الاختبارات.
-6. نشر الـWorker.
+1. `npm install`
+2. إنشاء قاعدة **D1 جديدة من الصفر** باسم فريد.
+3. ربطها بالمشروع باسم `DB`.
+4. تطبيق `migrations/0001_initial.sql`.
+5. تشغيل فحص JavaScript والاختبارات.
+6. نشر Worker والواجهة.
 
-إذا Wrangler طلب تسجيل دخول، نفّذ مرة واحدة:
+إذا Wrangler طلب تسجيل الدخول، نفّذ مرة واحدة:
 
 ```bash
 npx wrangler login
 ```
 
-ثم شغّل `START-FRESH-DATABASE.bat` من جديد.
+ثم شغّل الملف من جديد.
 
-## أول دخول
+## أول زيارة
 
-بعد النشر افتح الموقع. قاعدة البيانات ستكون فارغة من المستخدمين والمواد والملفات والإعلانات. ستظهر شاشة **إنشاء حساب Owner** في أول تشغيل فقط.
+ستظهر شاشة إنشاء **Owner**. بعد إنشاء المالك يمكنك الدخول إلى لوحة الإدارة.
 
-## الجداول الجديدة
+## ما الجديد في v8
+
+- No R2 بالكامل — D1 للبيانات وروابط HTTPS خارجية للملفات.
+- رابط أساسي + رابطان احتياطيان لكل ملف.
+- Link Checker للرابط الأساسي والروابط الاحتياطية.
+- Tags، تثبيت الملفات، تاريخ انتهاء اختياري، وعدّاد فتح.
+- Bulk Import من CSV حتى 200 ملف في العملية الواحدة.
+- Trash: حذف مرن + استرجاع + حذف نهائي.
+- Owner / Admin / Editor وصلاحيات مختلفة.
+- إدارة فريق الإدارة من حساب Owner.
+- Backup / Restore JSON للمحتوى والإعدادات.
+- Maintenance Mode للطلاب مع بقاء لوحة الإدارة متاحة.
+- PWA + Service Worker.
+- مفضلة وRecently Viewed محليًا على جهاز الطالب بدون حساب.
+- QR لكل ملف.
+- بحث وفلاتر للمستوى والفصل والقسم ونوع المحتوى والوسوم.
+- Dark Mode وتصميم Responsive.
+- Security Headers + HTTPS-only external links + منع private/local IPs.
+- فحص الروابط لا يتبع redirects، لتقليل مخاطر SSRF.
+
+## بنية التخزين
+
+### D1
+
+يحتفظ فقط بالبيانات الوصفية:
 
 - `admins`
 - `sessions`
@@ -41,9 +77,24 @@ npx wrangler login
 - `settings`
 - `audit_logs`
 
-## مهم
+### الملفات
 
-السكريبت ينشئ قاعدة جديدة ولا يحذف قاعدة Cloudflare القديمة. هذا يمنع فقد البيانات القديمة بالخطأ. إذا أردت حذف القاعدة القديمة لاحقًا افعل ذلك يدويًا من Cloudflare بعد التأكد من النسخة الجديدة.
+الملفات نفسها تكون في خدمات خارجية مثل Google Drive أو OneDrive أو Dropbox أو GitHub أو أي رابط HTTPS عام. D1 يحتفظ بالرابط فقط.
+
+## تنسيق Bulk Import
+
+```csv
+subject_code,title,url,type,content_type,tags,mirror_url_1,mirror_url_2
+ACC101,Chapter 1,https://example.com/file.pdf,PDF,lectures,"chapter1, important",,
+```
+
+الأعمدة الأساسية: `subject_code`, `title`, `url`.
+
+## الصلاحيات
+
+- **Owner**: كل الصلاحيات + إدارة الفريق.
+- **Admin**: المحتوى + الإعدادات + Backup/Restore + Trash.
+- **Editor**: إدارة المواد والملفات والإعلانات والاستيراد فقط.
 
 ## أوامر مفيدة
 
@@ -55,10 +106,12 @@ npm run db:init:remote
 npm run deploy
 ```
 
-فحص الاتصال بعد النشر:
+بعد النشر:
 
 ```text
 /api/health
 /api/diagnostics
 /api/bootstrap/status
 ```
+
+`/api/health` يجب أن يعرض `ok: true`. تفاصيل البنية الداخلية موجودة داخل لوحة الإدارة فقط.

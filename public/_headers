@@ -10,3 +10,6 @@
 
 /style.css
   Cache-Control: public, max-age=0, must-revalidate
+
+/sw.js
+  Cache-Control: no-cache
