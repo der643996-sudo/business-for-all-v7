@@ -11,7 +11,7 @@ const pkg=JSON.parse(fs.readFileSync('package.json','utf8'));
 const migration=fs.readFileSync('migrations/0001_initial.sql','utf8');
 
 test('v8 package is existing-D1 and No-R2',()=>{
-  assert.equal(pkg.version,'8.0.1');
+  assert.equal(pkg.version,'8.0.2');
   assert.equal(config.r2_buckets,undefined);
   assert.equal(config.d1_databases?.[0]?.binding,'DB');
   assert.equal(config.d1_databases?.[0]?.database_id,'5bcf36c6-e1fc-47d4-8431-6d1fc1c8aa5a');
@@ -63,6 +63,13 @@ test('frontend contains all requested v8 flows',()=>{
   assert.match(app,/maintenance_mode/);
   assert.match(css,/\.quick-switch/);
   assert.match(css,/\.trash-item/);
+});
+
+test('each resource opens in its own dedicated browser window with fallback',()=>{
+  assert.match(app,/name=`bfa_file_\$\{Number\(id\)\|\|0\}_\$\{which\}`/);
+  assert.match(app,/popup=yes,width=\$\{width\},height=\$\{height\}/);
+  assert.match(app,/fileWindow\.focus\(\)/);
+  assert.match(app,/window\.open\(url,'_blank','noopener,noreferrer'\)/);
 });
 
 test('PWA service worker does not cache API responses',()=>{

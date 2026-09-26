@@ -1,4 +1,4 @@
-const VERSION='8.0.0';
+const VERSION='8.0.2';
 const savedTheme=localStorage.getItem('bfa-theme');
 document.documentElement.dataset.theme=savedTheme||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
 
@@ -59,7 +59,20 @@ function getLocalList(key){try{return JSON.parse(localStorage.getItem(key)||'[]'
 function setLocalList(key,list){localStorage.setItem(key,JSON.stringify(list.slice(0,30)))}
 function toggleFavorite(id){let list=getLocalList('bfa-favorites').map(Number);list=list.includes(+id)?list.filter(x=>x!==+id):[+id,...list];setLocalList('bfa-favorites',list);publicSite()}
 function markRecent(id){let list=getLocalList('bfa-recent').map(Number).filter(x=>x!==+id);list.unshift(+id);setLocalList('bfa-recent',list)}
-function openResource(id,which='primary'){markRecent(id);const suffix=which==='primary'?'':`?link=${which}`;window.open(`/api/resource/${id}${suffix}`,'_blank','noopener')}
+function openResource(id,which='primary'){
+  markRecent(id);
+  const suffix=which==='primary'?'':`?link=${which}`;
+  const url=`/api/resource/${id}${suffix}`;
+  const width=Math.max(760,Math.min(1280,(window.screen?.availWidth||1280)-80));
+  const height=Math.max(620,Math.min(900,(window.screen?.availHeight||900)-80));
+  const left=Math.max(0,Math.round(((window.screen?.availWidth||width)-width)/2));
+  const top=Math.max(0,Math.round(((window.screen?.availHeight||height)-height)/2));
+  const name=`bfa_file_${Number(id)||0}_${which}`;
+  const features=`popup=yes,width=${width},height=${height},left=${left},top=${top},resizable=yes,scrollbars=yes`;
+  const fileWindow=window.open(url,name,features);
+  if(fileWindow){try{fileWindow.opener=null;fileWindow.focus()}catch{}}
+  else window.open(url,'_blank','noopener,noreferrer');
+}
 
 function openModal({title,body,foot='',wide=false,onReady}={}){const layer=$('#dialog');layer.className='modal-layer';layer.setAttribute('aria-hidden','false');layer.innerHTML=`<section class="modal ${wide?'wide':''}" role="dialog" aria-modal="true"><header class="modal-head"><h2>${esc(title||'')}</h2><button class="icon-btn btn-ghost" data-close-modal>${icon('close')}</button></header><div class="modal-body">${body||''}</div>${foot?`<footer class="modal-foot">${foot}</footer>`:''}</section>`;document.body.classList.add('modal-open');layer.onclick=e=>{if(e.target===layer)closeModal()};onReady?.(layer);setTimeout(()=>layer.querySelector('input,select,textarea,button')?.focus(),10)}
 function closeModal(){const layer=$('#dialog');layer.className='modal-layer hidden';layer.setAttribute('aria-hidden','true');layer.innerHTML='';document.body.classList.remove('modal-open')}
