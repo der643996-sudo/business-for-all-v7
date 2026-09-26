@@ -1,0 +1,13 @@
+{
+  "name": "Business For All",
+  "short_name": "BFA",
+  "description": "منصة أكاديمية منظمة للمواد والمحاضرات والملفات",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#f6f8fb",
+  "theme_color": "#0f766e",
+  "lang": "ar",
+  "dir": "rtl",
+  "categories": ["education", "productivity"]
+}
